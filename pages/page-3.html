@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phân Công Ca Trực - Cafe Task Manager</title>
+  <meta name="description" content="Trang Phân công ca trực và điều phối nhân sự theo ca làm việc. Tích hợp khung chung Navbar, Footer, Dark Mode và TaskService.">
+  
+  <!-- CSS Dùng Chung (Người 1 phụ trách) -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+  <!-- ================================================================
+       NAVBAR RESPONSIVE DÙNG CHUNG (NGƯỜI 1 PHỤ TRÁCH)
+       ================================================================ -->
+  <header class="site-navbar" id="site-navbar">
+    <div class="container navbar-container">
+      
+      <!-- Brand Logo & Title -->
+      <a href="../index.html" class="navbar-brand" aria-label="Về trang chủ Cafe Task Manager">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Cafe Task Manager</span>
+          <span class="brand-badge">Hệ thống vận hành</span>
+        </div>
+      </a>
+
+      <!-- Menu Điều Hướng (Dùng chung cho cả 3 trang) -->
+      <nav class="navbar-nav" id="navbar-nav" aria-label="Điều hướng chính">
+        <div class="mobile-nav-header">
+          <span class="brand-title" style="font-size: var(--text-lg);">Cafe Task Manager</span>
+          <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Đóng menu">&times;</button>
+        </div>
+
+        <ul class="nav-list">
+          <li><a href="../index.html" class="nav-link">Trang chủ</a></li>
+          <li><a href="page-2.html" class="nav-link">Báo cáo &amp; Thống kê</a></li>
+          <li><a href="page-3.html" class="nav-link">Phân công ca trực</a></li>
+        </ul>
+      </nav>
+
+      <!-- Overlay che mờ khi mở mobile drawer -->
+      <div class="navbar-overlay" id="navbar-overlay" aria-hidden="true"></div>
+
+      <!-- Action Buttons (Dark Mode Toggle & Nút công cụ) -->
+      <div class="navbar-actions">
+        <!-- Nút chuyển đổi Dark Mode / Light Mode -->
+        <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Chuyển đổi giao diện Sáng/Tối" title="Chuyển đổi giao diện">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- Nút Hamburger Điều Khiển Mobile Menu -->
+        <button type="button" class="navbar-toggle" id="navbar-toggle" aria-label="Mở menu điều hướng" aria-expanded="false" aria-controls="navbar-nav">
+          <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================================================================
+       MAIN CONTENT: PHÂN CÔNG CA TRỰC (NGƯỜI 3 PHỤ TRÁCH)
+       Khung tích hợp chung kết nối cùng tầng dữ liệu TaskService.
+       ================================================================ -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Tiêu đề trang -->
+      <div class="page-header">
+        <div class="page-title-group">
+          <h1>
+            <span>Phân Công Ca Trực &amp; Điều Phối Quán</span>
+          </h1>
+          <p class="page-title-desc">
+            Sắp xếp nhiệm vụ cho các ca làm việc (Ca Sáng: 06:30 - 14:30 | Ca Tối: 14:30 - 22:30).
+          </p>
+        </div>
+
+        <div>
+          <a href="../index.html" class="btn btn-primary">
+            <span>Quay lại Quản lý chung</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Bố cục 3 Ca làm việc mẫu tích hợp dữ liệu -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-xl);">
+        
+        <!-- Ca 1: Mở quán & Chuẩn bị sáng -->
+        <div class="card" style="border-top: 4px solid var(--accent);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+            <h3 style="font-size: var(--text-base);">🌅 Ca Sáng (06:30 - 14:30)</h3>
+            <span class="badge badge-pending">Ca chính</span>
+          </div>
+          <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-md);">
+            Trọng tâm: Khởi động máy pha, nhận sữa &amp; đá tươi, chuẩn bị cốt trà, phục vụ cao điểm sáng.
+          </p>
+          <div id="shift-morning-tasks" style="display: flex; flex-direction: column; gap: var(--space-xs);">
+            <!-- Render công việc ca sáng -->
+          </div>
+        </div>
+
+        <!-- Ca 2: Chiều & Tối -->
+        <div class="card" style="border-top: 4px solid var(--primary);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+            <h3 style="font-size: var(--text-base);">🌇 Ca Tối (14:30 - 22:30)</h3>
+            <span class="badge badge-in-progress">Đang chạy</span>
+          </div>
+          <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-md);">
+            Trọng tâm: Duy trì phục vụ khách làm việc &amp; gặp gỡ buổi tối, vệ sinh bàn ghế, kiểm kê đồ uống.
+          </p>
+          <div id="shift-evening-tasks" style="display: flex; flex-direction: column; gap: var(--space-xs);">
+            <!-- Render công việc ca tối -->
+          </div>
+        </div>
+
+        <!-- Ca 3: Đóng quán & Vệ sinh -->
+        <div class="card" style="border-top: 4px solid var(--success);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+            <h3 style="font-size: var(--text-base);">🌙 Đóng Cửa &amp; Vệ Sinh Cuối Ngày</h3>
+            <span class="badge badge-completed">Hàng ngày</span>
+          </div>
+          <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-md);">
+            Trọng tâm: Vệ sinh backflush họng pha, đổ bã cà phê, dọn tủ lạnh nguyên liệu, kiểm kê két tiền.
+          </p>
+          <div id="shift-closing-tasks" style="display: flex; flex-direction: column; gap: var(--space-xs);">
+            <!-- Render công việc đóng quán -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- KHU VỰC PHÁT TRIỂN DÀNH CHO NGƯỜI 3:
+           Người 3 có thể phát triển bảng phân công lịch nhân sự theo tuần,
+           tính năng chấm công, hoặc giao việc cụ thể cho từng Barista tại đây.
+           Dữ liệu có thể lấy trực tiếp qua hàm: window.TaskService.getTasks() -->
+      <!-- ============================================================= -->
+
+    </div>
+  </main>
+
+  <!-- ================================================================
+       FOOTER DÙNG CHUNG (NGƯỜI 1 PHỤ TRÁCH)
+       ================================================================ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="brand-icon" style="width: 30px; height: 30px;">☕</div>
+          <div>
+            <strong style="color: var(--text-primary);">Cafe Task Manager</strong>
+            <div style="font-size: var(--text-xs); color: var(--text-muted);">Mô hình vận hành quán Cafe MVP</div>
+          </div>
+        </div>
+        <div class="footer-nav">
+          <a href="../index.html">Trang chủ</a>
+          <a href="page-2.html">Báo cáo &amp; Thống kê</a>
+          <a href="page-3.html">Phân công ca trực</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Cafe Task Manager. Bản quyền dự án Lập trình Web.</span>
+        <span>Phụ trách Khung &amp; Data Core: Người 1 (Leader)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Dùng Chung (Người 1 phụ trách) -->
+  <script src="../assets/js/taskService.js"></script>
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Script liên kết dữ liệu cho Trang 3 -->
+  <script>
+    (function () {
+      function updatePage3Shifts() {
+        if (!window.TaskService) return;
+        const tasks = window.TaskService.getTasks();
+
+        const morningEl = document.getElementById('shift-morning-tasks');
+        const eveningEl = document.getElementById('shift-evening-tasks');
+        const closingEl = document.getElementById('shift-closing-tasks');
+
+        // Phân bổ mẫu các task vào 3 ca dựa trên danh mục/nhiệm vụ
+        const morningTasks = tasks.filter(t => t.category === 'Kho & Nguyên liệu' || t.category === 'Pha chế');
+        const eveningTasks = tasks.filter(t => t.category === 'Phục vụ' || t.category === 'Quầy bar' || t.category === 'Chung');
+        const closingTasks = tasks.filter(t => t.category === 'Kỹ thuật & Máy móc' || t.status === 'completed');
+
+        function renderMiniTaskList(element, list) {
+          if (!element) return;
+          if (list.length === 0) {
+            element.innerHTML = '<span style="font-size: var(--text-xs); color: var(--text-muted);">Chưa có công việc phân công.</span>';
+            return;
+          }
+          element.innerHTML = list.slice(0, 4).map(t => `
+            <div style="font-size: var(--text-xs); background: var(--bg-surface-secondary); padding: 6px 10px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 500;">${t.title}</span>
+              <span class="badge badge-${t.status}" style="font-size: 0.65rem;">${t.status === 'completed' ? 'Xong' : 'Chờ'}</span>
+            </div>
+          `).join('');
+        }
+
+        renderMiniTaskList(morningEl, morningTasks);
+        renderMiniTaskList(eveningEl, eveningTasks);
+        renderMiniTaskList(closingEl, closingTasks);
+      }
+
+      document.addEventListener('DOMContentLoaded', updatePage3Shifts);
+      window.addEventListener('tasks:changed', updatePage3Shifts);
+    })();
+  </script>
+</body>
+</html>

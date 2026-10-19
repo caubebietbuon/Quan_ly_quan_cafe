@@ -1,0 +1,13 @@
+# Hệ thống & Trình soạn thảo
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Thư mục tạm & sao lưu
+node_modules/
+dist/
+backup_*/
+*.bak
+*.tmp
