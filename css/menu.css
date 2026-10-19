@@ -1,0 +1,18 @@
+/**
+ * ====================================================================
+ * DỰ ÁN: QUẢN LÝ QUÁN COFFEE (MVP)
+ * TRANG THỰC ĐƠN (menu.html)
+ * Phụ trách: Người 3 (Thực đơn)
+ * ====================================================================
+ * Hướng dẫn tích hợp:
+ * - Bạn có thể tận dụng các biến màu và font đã khai báo trong css/style.css:
+ *   + var(--color-primary), var(--color-accent), var(--color-bg)...
+ *   + var(--font-sans), var(--font-serif)
+ *   + Huy hiệu trạng thái đơn/món: .badge-pending, .badge-preparing, .badge-completed, .badge-cancelled
+ * - Các class nút bấm (.btn, .btn-primary, .btn-accent...), card (.card),
+ *   form (.form-input, .form-select) đã được định nghĩa sẵn.
+ * - Hãy viết toàn bộ CSS riêng của Trang thực đơn tại file này.
+ * ====================================================================
+ */
+
+/* Viết CSS riêng cho Thực đơn bên dưới */
