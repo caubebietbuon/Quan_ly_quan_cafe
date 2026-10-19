@@ -302,22 +302,41 @@
       function renderTasks() {
         if (!window.TaskService) return;
 
-        const allTasks = window.TaskService.getTasks();
+        const allTasks = window.TaskService.getAllTasks ? window.TaskService.getAllTasks() : window.TaskService.getTasks();
         const searchTerm = (searchInput.value || '').trim().toLowerCase();
-        const currentFilter = filterStatus.value;
+        const currentFilter = filterStatus.value.toLowerCase();
 
-        // Cập nhật thống kê
+        // Cập nhật thống kê (hỗ trợ cả Pending/Done lẫn pending/completed)
+        const isDone = (status) => {
+          const s = String(status || '').toLowerCase();
+          return s === 'done' || s === 'completed';
+        };
+        const isPending = (status) => {
+          const s = String(status || '').toLowerCase();
+          return s === 'pending';
+        };
+
         document.getElementById('stat-total').textContent = allTasks.length;
-        document.getElementById('stat-pending').textContent = allTasks.filter(t => t.status === 'pending').length;
-        document.getElementById('stat-in-progress').textContent = allTasks.filter(t => t.status === 'in-progress').length;
-        document.getElementById('stat-completed').textContent = allTasks.filter(t => t.status === 'completed').length;
+        document.getElementById('stat-pending').textContent = allTasks.filter(t => isPending(t.status)).length;
+        document.getElementById('stat-in-progress').textContent = allTasks.filter(t => String(t.status || '').toLowerCase() === 'in-progress').length;
+        document.getElementById('stat-completed').textContent = allTasks.filter(t => isDone(t.status)).length;
 
         // Lọc danh sách
         const filtered = allTasks.filter(task => {
           const matchSearch = task.title.toLowerCase().includes(searchTerm) || 
                               (task.description && task.description.toLowerCase().includes(searchTerm)) ||
                               (task.category && task.category.toLowerCase().includes(searchTerm));
-          const matchStatus = (currentFilter === 'all') || (task.status === currentFilter);
+          
+          let matchStatus = true;
+          if (currentFilter !== 'all') {
+            if (currentFilter === 'completed' || currentFilter === 'done') {
+              matchStatus = isDone(task.status);
+            } else if (currentFilter === 'pending') {
+              matchStatus = isPending(task.status);
+            } else {
+              matchStatus = String(task.status || '').toLowerCase() === currentFilter;
+            }
+          }
           return matchSearch && matchStatus;
         });
 
@@ -338,34 +357,36 @@
         const statusLabelMap = {
           'pending': 'Chờ thực hiện',
           'in-progress': 'Đang làm',
-          'completed': 'Hoàn thành'
+          'completed': 'Hoàn thành',
+          'done': 'Hoàn thành'
         };
 
         taskListEl.innerHTML = filtered.map(task => {
-          const isCompleted = task.status === 'completed';
-          const dateStr = task.createdAt ? new Date(task.createdAt).toLocaleDateString('vi-VN', {
-            hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit'
-          }) : '';
+          const done = isDone(task.status);
+          const statusKey = String(task.status || '').toLowerCase();
+          const priorityKey = String(task.priority || '').toLowerCase();
+          const dateStr = task.deadline || (task.createdAt ? new Date(task.createdAt).toLocaleDateString('vi-VN') : '');
 
           return `
             <div class="card" style="border-left: 5px solid ${
-              task.status === 'completed' ? 'var(--status-completed)' :
-              task.status === 'in-progress' ? 'var(--status-in-progress)' : 'var(--status-pending)'
+              done ? 'var(--status-completed)' :
+              statusKey === 'in-progress' ? 'var(--status-in-progress)' : 'var(--status-pending)'
             }; display: flex; flex-direction: column; gap: var(--space-xs);">
               <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-sm); flex-wrap: wrap;">
                 <div style="flex: 1;">
                   <div style="display: flex; align-items: center; gap: var(--space-xs); flex-wrap: wrap; margin-bottom: 4px;">
-                    <span class="badge badge-${task.status}">${statusLabelMap[task.status] || task.status}</span>
-                    <span class="badge badge-priority-${task.priority}">● ${priorityLabelMap[task.priority] || task.priority}</span>
+                    <span class="badge ${done ? 'badge-completed' : 'badge-pending'}">${done ? 'Hoàn thành (Done)' : 'Chờ làm (Pending)'}</span>
+                    <span class="badge badge-priority-${priorityKey}">● ${priorityLabelMap[priorityKey] || task.priority}</span>
                     <span style="font-size: var(--text-xs); color: var(--text-muted); background: var(--bg-surface-secondary); padding: 2px 8px; border-radius: var(--radius-sm);">🏷️ ${task.category || 'Chung'}</span>
+                    ${task.deadline ? `<span style="font-size: var(--text-xs); color: var(--primary); background: var(--primary-soft); padding: 2px 8px; border-radius: var(--radius-sm); font-weight: 600;">📅 Hạn: ${task.deadline}</span>` : ''}
                   </div>
-                  <h3 style="font-size: var(--text-lg); ${isCompleted ? 'text-decoration: line-through; opacity: 0.75;' : ''}">${task.title}</h3>
+                  <h3 style="font-size: var(--text-lg); ${done ? 'text-decoration: line-through; opacity: 0.75;' : ''}">${task.title}</h3>
                 </div>
                 
                 <!-- Nút thao tác nhanh -->
                 <div style="display: flex; gap: var(--space-2xs); align-items: center;">
-                  <button type="button" class="btn btn-outline btn-sm btn-toggle-status" data-id="${task.id}" data-current="${task.status}" title="Đổi trạng thái nhanh">
-                    ${isCompleted ? '↺ Mở lại' : '✓ Hoàn thành'}
+                  <button type="button" class="btn btn-outline btn-sm btn-toggle-status" data-id="${task.id}" title="Đổi trạng thái nhanh">
+                    ${done ? '↺ Mở lại' : '✓ Hoàn thành'}
                   </button>
                   <button type="button" class="btn btn-icon btn-edit-task" data-id="${task.id}" title="Chỉnh sửa công việc">
                     ✏️
@@ -379,7 +400,7 @@
               ${task.description ? `<p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 2px;">${task.description}</p>` : ''}
 
               <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: 4px;">
-                Tạo lúc: ${dateStr}
+                Mã: <code>${task.id}</code> ${dateStr ? `| Hạn/Tạo: ${dateStr}` : ''}
               </div>
             </div>
           `;
@@ -390,14 +411,16 @@
 
       // Gắn sự kiện cho các item trong danh sách
       function attachTaskItemEvents() {
-        // Đổi trạng thái nhanh
+        // Đổi trạng thái nhanh bằng hàm toggleStatus chính thức
         document.querySelectorAll('.btn-toggle-status').forEach(btn => {
           btn.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
-            const current = this.getAttribute('data-current');
-            const nextStatus = current === 'completed' ? 'pending' : 'completed';
-            window.TaskService.updateTask(id, { status: nextStatus });
-            window.showToast(`Đã chuyển công việc sang "${nextStatus === 'completed' ? 'Hoàn thành' : 'Chờ làm'}"`, 'success');
+            if (window.TaskService && window.TaskService.toggleStatus) {
+              const updated = window.TaskService.toggleStatus(id);
+              if (updated) {
+                window.showToast(`Đã chuyển trạng thái công việc sang "${updated.status}"`, 'success');
+              }
+            }
           });
         });
 

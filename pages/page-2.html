@@ -182,11 +182,15 @@
     (function () {
       function updatePage2Stats() {
         if (!window.TaskService) return;
-        const tasks = window.TaskService.getTasks();
+        const tasks = window.TaskService.getAllTasks ? window.TaskService.getAllTasks() : window.TaskService.getTasks();
         const total = tasks.length;
-        const completed = tasks.filter(t => t.status === 'completed').length;
-        const active = tasks.filter(t => t.status === 'in-progress' || t.status === 'pending').length;
-        const highPriority = tasks.filter(t => t.priority === 'high').length;
+        const isDone = t => {
+          const s = String(t.status || '').toLowerCase();
+          return s === 'done' || s === 'completed';
+        };
+        const completed = tasks.filter(isDone).length;
+        const active = total - completed;
+        const highPriority = tasks.filter(t => String(t.priority || '').toLowerCase() === 'high').length;
         const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
         document.getElementById('stat-p2-total').textContent = total;

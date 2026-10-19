@@ -188,16 +188,21 @@
     (function () {
       function updatePage3Shifts() {
         if (!window.TaskService) return;
-        const tasks = window.TaskService.getTasks();
+        const tasks = window.TaskService.getAllTasks ? window.TaskService.getAllTasks() : window.TaskService.getTasks();
 
         const morningEl = document.getElementById('shift-morning-tasks');
         const eveningEl = document.getElementById('shift-evening-tasks');
         const closingEl = document.getElementById('shift-closing-tasks');
 
+        const isDone = t => {
+          const s = String(t.status || '').toLowerCase();
+          return s === 'done' || s === 'completed';
+        };
+
         // Phân bổ mẫu các task vào 3 ca dựa trên danh mục/nhiệm vụ
         const morningTasks = tasks.filter(t => t.category === 'Kho & Nguyên liệu' || t.category === 'Pha chế');
         const eveningTasks = tasks.filter(t => t.category === 'Phục vụ' || t.category === 'Quầy bar' || t.category === 'Chung');
-        const closingTasks = tasks.filter(t => t.category === 'Kỹ thuật & Máy móc' || t.status === 'completed');
+        const closingTasks = tasks.filter(t => t.category === 'Kỹ thuật & Máy móc' || isDone(t));
 
         function renderMiniTaskList(element, list) {
           if (!element) return;
@@ -205,12 +210,15 @@
             element.innerHTML = '<span style="font-size: var(--text-xs); color: var(--text-muted);">Chưa có công việc phân công.</span>';
             return;
           }
-          element.innerHTML = list.slice(0, 4).map(t => `
+          element.innerHTML = list.slice(0, 4).map(t => {
+            const done = isDone(t);
+            return `
             <div style="font-size: var(--text-xs); background: var(--bg-surface-secondary); padding: 6px 10px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
               <span style="font-weight: 500;">${t.title}</span>
-              <span class="badge badge-${t.status}" style="font-size: 0.65rem;">${t.status === 'completed' ? 'Xong' : 'Chờ'}</span>
+              <span class="badge ${done ? 'badge-completed' : 'badge-pending'}" style="font-size: 0.65rem;">${done ? 'Xong' : 'Chờ'}</span>
             </div>
-          `).join('');
+          `;
+          }).join('');
         }
 
         renderMiniTaskList(morningEl, morningTasks);

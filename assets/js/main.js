@@ -17,7 +17,9 @@
 (function (window, document) {
   'use strict';
 
-  const THEME_STORAGE_KEY = 'cafe_theme';
+  // Khóa lưu trữ theme theo quy ước nhóm: 'CAFE_THEME' ('light' | 'dark')
+  const THEME_STORAGE_KEY = 'CAFE_THEME';
+  const LEGACY_THEME_KEY = 'cafe_theme';
 
   /* ------------------------------------------------------------------
      1. TOAST NOTIFICATION DÙNG CHUNG
@@ -69,7 +71,7 @@
      ------------------------------------------------------------------ */
   const ThemeManager = {
     init: function () {
-      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(LEGACY_THEME_KEY);
       const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       
       // Nếu đã lưu theme thì ưu tiên sử dụng, nếu chưa thì xem sở thích của hệ thống
@@ -89,6 +91,7 @@
       document.documentElement.setAttribute('data-theme', theme);
       try {
         localStorage.setItem(THEME_STORAGE_KEY, theme);
+        localStorage.setItem(LEGACY_THEME_KEY, theme);
       } catch (e) {
         console.warn('[ThemeManager] Không thể lưu theme vào LocalStorage:', e);
       }
@@ -221,7 +224,8 @@
         e.preventDefault();
         if (!window.TaskService) return;
 
-        const currentCount = window.TaskService.getTasks().length;
+        const tasks = window.TaskService.getAllTasks ? window.TaskService.getAllTasks() : window.TaskService.getTasks();
+        const currentCount = tasks.length;
         if (currentCount === 0) {
           showToast('Hiện không có công việc nào để xóa!', 'warning');
           return;
@@ -232,7 +236,7 @@
         );
 
         if (confirmed) {
-          const success = window.TaskService.clearAllTasks();
+          const success = window.TaskService.clearAll ? window.TaskService.clearAll() : window.TaskService.clearAllTasks();
           if (success) {
             showToast('Đã xóa toàn bộ công việc thành công!', 'success');
           } else {
