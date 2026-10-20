@@ -65,11 +65,13 @@
   function applyTheme(theme, showFeedbackToast = false) {
     const isDark = theme === 'dark';
 
-    // 1. Áp dụng class lên body & html
+    // 1. Áp dụng class lên body & html (hỗ trợ cả dark-theme và dark-mode)
     if (document.body) {
       document.body.classList.toggle('dark-theme', isDark);
+      document.body.classList.toggle('dark-mode', isDark);
     }
     document.documentElement.classList.toggle('dark-theme', isDark);
+    document.documentElement.classList.toggle('dark-mode', isDark);
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
     // 2. Lưu lại vào LocalStorage
@@ -107,7 +109,7 @@
     setTimeout(() => { isToggling = false; }, 200);
 
     const isCurrentlyDark = document.body 
-      ? document.body.classList.contains('dark-theme') 
+      ? (document.body.classList.contains('dark-theme') || document.body.classList.contains('dark-mode'))
       : (document.documentElement.getAttribute('data-theme') === 'dark');
 
     const nextTheme = isCurrentlyDark ? 'light' : 'dark';
@@ -117,8 +119,10 @@
   // Khởi tạo ngay trạng thái từ ban đầu (chống chớp trắng màn hình)
   const initialTheme = getSavedTheme();
   if (initialTheme === 'dark') {
-    if (document.body) document.body.classList.add('dark-theme');
-    document.documentElement.classList.add('dark-theme');
+    if (document.body) {
+      document.body.classList.add('dark-theme', 'dark-mode');
+    }
+    document.documentElement.classList.add('dark-theme', 'dark-mode');
     document.documentElement.setAttribute('data-theme', 'dark');
   } else {
     document.documentElement.setAttribute('data-theme', 'light');

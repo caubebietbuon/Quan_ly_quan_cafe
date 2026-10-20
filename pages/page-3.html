@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phân Công Ca Trực - Cafe Task Manager</title>
-  <meta name="description" content="Trang Phân công ca trực và điều phối nhân sự theo ca làm việc. Tích hợp khung chung Navbar, Footer, Dark Mode và TaskService.">
-  
+  <meta name="description"
+    content="Trang Phân công ca trực và điều phối nhân sự theo ca làm việc. Tích hợp khung chung Navbar, Footer, Dark Mode và TaskService.">
+
   <!-- CSS Dùng Chung (Người 1 phụ trách) -->
   <link rel="stylesheet" href="../assets/css/style.css">
 
   <!-- Chống giật sáng khi chuyển trang (Tránh FOUC) -->
   <script>
-    if (localStorage.getItem('theme') === 'dark' || localStorage.getItem('CAFE_THEME') === 'dark') {
-      document.documentElement.classList.add('dark-theme');
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || localStorage.getItem('CAFE_THEME');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark-theme', 'dark-mode');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
   </script>
 </head>
+
 <body>
 
   <!-- ================================================================
@@ -24,11 +31,12 @@
        ================================================================ -->
   <header class="site-navbar" id="site-navbar">
     <div class="container navbar-container">
-      
+
       <!-- Brand Logo & Title -->
       <a href="../index.html" class="navbar-brand" aria-label="Về trang chủ Cafe Task Manager">
         <div class="brand-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
             <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
             <line x1="6" y1="1" x2="6" y2="4"></line>
@@ -63,14 +71,16 @@
       <!-- Action Buttons (Dark Mode Toggle & Nút công cụ) -->
       <div class="navbar-actions">
         <!-- Nút chuyển đổi Dark Mode / Light Mode -->
-        <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Chuyển đổi giao diện Sáng/Tối" title="Chuyển đổi giao diện">
+        <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Chuyển đổi giao diện Sáng/Tối"
+          title="Chuyển đổi giao diện">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
 
         <!-- Nút Hamburger Điều Khiển Mobile Menu -->
-        <button type="button" class="navbar-toggle" id="navbar-toggle" aria-label="Mở menu điều hướng" aria-expanded="false" aria-controls="navbar-nav">
+        <button type="button" class="navbar-toggle" id="navbar-toggle" aria-label="Mở menu điều hướng"
+          aria-expanded="false" aria-controls="navbar-nav">
           <span class="hamburger-box">
             <span class="hamburger-inner"></span>
           </span>
@@ -86,7 +96,7 @@
        ================================================================ -->
   <main class="main-content">
     <div class="container">
-      
+
       <!-- Tiêu đề trang -->
       <div class="page-header">
         <div class="page-title-group">
@@ -106,11 +116,13 @@
       </div>
 
       <!-- Bố cục 3 Ca làm việc mẫu tích hợp dữ liệu -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-xl);">
-        
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-xl);">
+
         <!-- Ca 1: Mở quán & Chuẩn bị sáng -->
         <div class="card" style="border-top: 4px solid var(--accent);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
             <h3 style="font-size: var(--text-base);">🌅 Ca Sáng (06:30 - 14:30)</h3>
             <span class="badge badge-pending">Ca chính</span>
           </div>
@@ -124,12 +136,13 @@
 
         <!-- Ca 2: Chiều & Tối -->
         <div class="card" style="border-top: 4px solid var(--primary);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
             <h3 style="font-size: var(--text-base);">🌇 Ca Tối (14:30 - 22:30)</h3>
             <span class="badge badge-in-progress">Đang chạy</span>
           </div>
           <p style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-md);">
-            Trọng tâm: Duy trì phục vụ khách làm việc &amp; gặp gỡ buổi tối, vệ sinh bàn ghế, kiểm kê đồ uống.
+            Trọng tâm: Phục vụ cao điểm tối, kiểm soát bàn ghế và chuẩn bị bàn giao chốt ca.
           </p>
           <div id="shift-evening-tasks" style="display: flex; flex-direction: column; gap: var(--space-xs);">
             <!-- Render công việc ca tối -->
@@ -138,7 +151,8 @@
 
         <!-- Ca 3: Đóng quán & Vệ sinh -->
         <div class="card" style="border-top: 4px solid var(--success);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
             <h3 style="font-size: var(--text-base);">🌙 Đóng Cửa &amp; Vệ Sinh Cuối Ngày</h3>
             <span class="badge badge-completed">Hàng ngày</span>
           </div>
@@ -215,33 +229,33 @@
         const eveningTasks = tasks.filter(t => t.category === 'Phục vụ' || t.category === 'Quầy bar' || t.category === 'Chung');
         const closingTasks = tasks.filter(t => t.category === 'Kỹ thuật & Máy móc' || isDone(t));
 
-      // Hàm tiện ích escape HTML an toàn chống lỗ hổng XSS
-      function escapeHtml(str) {
-        if (str === null || str === undefined) return '';
-        return String(str)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
-      }
-
-      function renderMiniTaskList(element, list) {
-        if (!element) return;
-        if (list.length === 0) {
-          element.innerHTML = '<span style="font-size: var(--text-xs); color: var(--text-muted);">Chưa có công việc phân công.</span>';
-          return;
+        // Hàm tiện ích escape HTML an toàn chống lỗ hổng XSS
+        function escapeHtml(str) {
+          if (str === null || str === undefined) return '';
+          return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
         }
-        element.innerHTML = list.slice(0, 4).map(t => {
-          const done = isDone(t);
-          return `
+
+        function renderMiniTaskList(element, list) {
+          if (!element) return;
+          if (list.length === 0) {
+            element.innerHTML = '<span style="font-size: var(--text-xs); color: var(--text-muted);">Chưa có công việc phân công.</span>';
+            return;
+          }
+          element.innerHTML = list.slice(0, 4).map(t => {
+            const done = isDone(t);
+            return `
             <div style="font-size: var(--text-xs); background: var(--bg-surface-secondary); padding: 6px 10px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
               <span style="font-weight: 500;">${escapeHtml(t.title)}</span>
               <span class="badge ${done ? 'badge-completed' : 'badge-pending'}" style="font-size: 0.65rem;">${done ? 'Xong' : 'Chờ'}</span>
             </div>
           `;
-        }).join('');
-      }
+          }).join('');
+        }
 
         renderMiniTaskList(morningEl, morningTasks);
         renderMiniTaskList(eveningEl, eveningTasks);
@@ -253,4 +267,5 @@
     })();
   </script>
 </body>
+
 </html>

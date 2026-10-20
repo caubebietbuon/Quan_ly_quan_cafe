@@ -14,10 +14,14 @@
 
   <!-- Chống giật sáng khi chuyển trang (Tránh FOUC) -->
   <script>
-    if (localStorage.getItem('theme') === 'dark' || localStorage.getItem('CAFE_THEME') === 'dark') {
-      document.documentElement.classList.add('dark-theme');
-      document.documentElement.setAttribute('data-theme', 'dark');
-    }
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || localStorage.getItem('CAFE_THEME');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark-theme', 'dark-mode');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
   </script>
 </head>
 <body>

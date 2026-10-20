@@ -101,9 +101,11 @@
   --navbar-height: 70px;
 }
 
-/* Màu khi bật chế độ Tối (Áp dụng cho body.dark-theme, html.dark-theme và [data-theme="dark"]) */
+/* Màu khi bật chế độ Tối (Áp dụng cho body.dark-theme, html.dark-theme, body.dark-mode, html.dark-mode, [data-theme="dark"]) */
 body.dark-theme,
 html.dark-theme,
+body.dark-mode,
+html.dark-mode,
 [data-theme="dark"] {
   --bg-color: #15110E;          /* Nền trang: Nâu đen sôcôla sâu */
   --text-color: #F5EFEB;        /* Văn bản chính: Trắng kem sáng */
@@ -179,6 +181,14 @@ nav, .navbar, .site-navbar, .header {
   background-color: var(--card-bg);
   color: var(--text-color);
   border-color: var(--border-color);
+}
+
+/* Các thẻ Card, Box, Panel, Modal đồng bộ màu theo biến */
+.card, .panel, .box, .modal-card {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 img, svg {
