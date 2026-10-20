@@ -587,18 +587,13 @@ h1, h2, h3, h4, h5, h6 {
 .nav-link.active {
   color: var(--accent);
   background-color: var(--accent-soft);
+  font-weight: 700;
 }
 
+/* Nền pill bo tròn (accent-soft) đã đủ làm nổi bật trang hiện tại,
+   loại bỏ thanh gạch chân ::after để tránh bị lệch và giúp giao diện thanh thoát */
 .nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 18px;
-  height: 2px;
-  background-color: var(--accent);
-  border-radius: var(--radius-full);
+  display: none;
 }
 
 /* Navbar Actions (Theme Toggle & Nút công cụ) */
@@ -930,10 +925,10 @@ h1, h2, h3, h4, h5, h6 {
     font-size: var(--text-base);
   }
 
-  .nav-link.active::after {
-    left: 12px;
-    transform: none;
-    width: 24px;
+  .nav-link.active {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
   }
 
   .navbar-overlay {

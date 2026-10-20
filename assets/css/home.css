@@ -76,90 +76,10 @@ a:focus-visible {
   transform: translateY(0);
 }
 
-.site-header {
-  position: relative;
-  z-index: 5;
-  background: var(--cream-50);
-}
-
-.header-inner {
-  display: flex;
-  min-height: 84px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.brand {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 11px;
-}
-
-.brand-mark {
-  display: grid;
-  width: 43px;
-  height: 43px;
-  flex: 0 0 43px;
-  place-items: center;
-  border-radius: 14px;
-  background: #efe7da;
-  color: var(--coffee-700);
-}
-
-.brand-mark svg {
-  width: 29px;
-  height: 29px;
-}
-
-.brand-copy {
-  display: grid;
-  gap: 2px;
-}
-
-.brand-name {
-  color: var(--coffee-900);
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.35px;
-}
-
-.brand-caption {
-  color: var(--muted);
-  font-size: 10px;
-}
-
-.main-nav {
-  display: flex;
-  align-items: center;
-  gap: clamp(16px, 2.4vw, 34px);
-}
-
-.nav-link {
-  position: relative;
-  padding-block: 10px;
-  color: #635b52;
-  font-size: 12px;
-  font-weight: 600;
-  transition: color 180ms ease;
-}
-
-.nav-link:hover,
-.nav-link.active {
-  color: var(--coffee-700);
-}
-
-.nav-link.active::after {
-  position: absolute;
-  right: 0;
-  bottom: 2px;
-  left: 0;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--coffee-500);
-  content: "";
-}
+/* ====================================================================
+   HEADER & NAVBAR: Da duoc dong bo dung chung qua style.css (.site-navbar)
+   Khong khai bao lai cac selector .nav-link tranh xung dot CSS cascade
+   ==================================================================== */
 
 .button {
   display: inline-flex;
@@ -617,7 +537,7 @@ a:focus-visible {
   color: var(--coffee-600);
 }
 
-.section-heading > p:last-child {
+.section-heading>p:last-child {
   max-width: 520px;
   margin: 16px auto 0;
   color: var(--muted);
@@ -771,7 +691,7 @@ a:focus-visible {
   color: #e3bd94;
 }
 
-.footer-about > p {
+.footer-about>p {
   max-width: 310px;
   margin: 16px 0 0;
   color: #a99d91;
@@ -806,7 +726,7 @@ a:focus-visible {
   color: #e4bd96;
 }
 
-.footer-contact > a {
+.footer-contact>a {
   color: #e4bd96;
 }
 
@@ -1050,7 +970,7 @@ a:focus-visible {
     font-size: 35px;
   }
 
-  .section-heading > p:last-child {
+  .section-heading>p:last-child {
     font-size: 11px;
   }
 
@@ -1113,6 +1033,7 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
