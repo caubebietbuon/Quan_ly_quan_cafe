@@ -206,22 +206,33 @@
         const eveningTasks = tasks.filter(t => t.category === 'Phục vụ' || t.category === 'Quầy bar' || t.category === 'Chung');
         const closingTasks = tasks.filter(t => t.category === 'Kỹ thuật & Máy móc' || isDone(t));
 
-        function renderMiniTaskList(element, list) {
-          if (!element) return;
-          if (list.length === 0) {
-            element.innerHTML = '<span style="font-size: var(--text-xs); color: var(--text-muted);">Chưa có công việc phân công.</span>';
-            return;
-          }
-          element.innerHTML = list.slice(0, 4).map(t => {
-            const done = isDone(t);
-            return `
+      // Hàm tiện ích escape HTML an toàn chống lỗ hổng XSS
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function renderMiniTaskList(element, list) {
+        if (!element) return;
+        if (list.length === 0) {
+          element.innerHTML = '<span style="font-size: var(--text-xs); color: var(--text-muted);">Chưa có công việc phân công.</span>';
+          return;
+        }
+        element.innerHTML = list.slice(0, 4).map(t => {
+          const done = isDone(t);
+          return `
             <div style="font-size: var(--text-xs); background: var(--bg-surface-secondary); padding: 6px 10px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-weight: 500;">${t.title}</span>
+              <span style="font-weight: 500;">${escapeHtml(t.title)}</span>
               <span class="badge ${done ? 'badge-completed' : 'badge-pending'}" style="font-size: 0.65rem;">${done ? 'Xong' : 'Chờ'}</span>
             </div>
           `;
-          }).join('');
-        }
+        }).join('');
+      }
 
         renderMiniTaskList(morningEl, morningTasks);
         renderMiniTaskList(eveningEl, eveningTasks);

@@ -10,37 +10,72 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <!-- CSS Dùng Chung (Người 1 phụ trách) -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- CSS Trang Chủ (Người 4 phụ trách) -->
   <link rel="stylesheet" href="assets/css/home.css">
 </head>
 <body>
   <a class="skip-link" href="#noi-dung">Bỏ qua điều hướng, đến nội dung chính</a>
 
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.html" aria-label="Cafe Task Manager - Trang chủ">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M7 12h17v9a5 5 0 0 1-5 5h-7a5 5 0 0 1-5-5v-9Z" stroke="currentColor" stroke-width="2"/>
-            <path d="M24 14h2a3 3 0 0 1 0 6h-2M11 5c0 2 2 2 2 4m5-4c0 2 2 2 2 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <!-- ================================================================
+       NAVBAR RESPONSIVE DÙNG CHUNG (NGƯỜI 1 PHỤ TRÁCH)
+       ================================================================ -->
+  <header class="site-navbar" id="site-navbar">
+    <div class="container navbar-container">
+      
+      <!-- Brand Logo & Title -->
+      <a href="index.html" class="navbar-brand" aria-label="Về trang chủ Cafe Task Manager">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
           </svg>
-        </span>
-        <span class="brand-copy">
-          <span class="brand-name">Cafe Task Manager</span>
-          <span class="brand-caption">Vận hành quán, nhẹ nhàng hơn</span>
-        </span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Cafe Task Manager</span>
+          <span class="brand-badge">Hệ thống vận hành</span>
+        </div>
       </a>
 
-      <nav class="main-nav" aria-label="Điều hướng chính">
-        <a class="nav-link active" href="index.html" aria-current="page">Trang chủ</a>
-        <a class="nav-link" href="#tinh-nang">Tính năng</a>
-        <a class="nav-link" href="statistics.html">Báo cáo &amp; Thống kê</a>
-        <a class="nav-link" href="pages/page-3.html">Ca trực</a>
+      <!-- Menu Điều Hướng (Dùng chung cho cả 3 trang) -->
+      <nav class="navbar-nav" id="navbar-nav" aria-label="Điều hướng chính">
+        <div class="mobile-nav-header">
+          <span class="brand-title" style="font-size: var(--text-lg);">Cafe Task Manager</span>
+          <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Đóng menu">&times;</button>
+        </div>
+
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link active" aria-current="page">Trang chủ</a></li>
+          <li><a href="tasks.html" class="nav-link">Quản lý công việc</a></li>
+          <li><a href="statistics.html" class="nav-link">Báo cáo &amp; Thống kê</a></li>
+          <li><a href="pages/page-3.html" class="nav-link">Phân công ca trực</a></li>
+        </ul>
       </nav>
 
-      <a class="button button-primary header-cta" href="tasks.html">
-        Vào quản lý công việc
-        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
+      <!-- Overlay che mờ khi mở mobile drawer -->
+      <div class="navbar-overlay" id="navbar-overlay" aria-hidden="true"></div>
+
+      <!-- Action Buttons (Dark Mode Toggle & Nút công cụ) -->
+      <div class="navbar-actions">
+        <!-- Nút chuyển đổi Dark Mode / Light Mode -->
+        <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Chuyển đổi giao diện Sáng/Tối" title="Chuyển đổi giao diện">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- Nút Hamburger Điều Khiển Mobile Menu -->
+        <button type="button" class="navbar-toggle" id="navbar-toggle" aria-label="Mở menu điều hướng" aria-expanded="false" aria-controls="navbar-nav">
+          <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+          </span>
+        </button>
+      </div>
+
     </div>
   </header>
 
@@ -201,5 +236,8 @@
       </div>
     </div>
   </footer>
+
+  <!-- JavaScript Dùng Chung (Người 1 phụ trách) -->
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
