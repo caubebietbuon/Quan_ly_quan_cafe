@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Công Việc Quán Cafe - Cafe Task Manager</title>
+  <meta name="description" content="Hệ thống Quản lý Công việc Quán Cafe - Tìm kiếm, Lọc đa tiêu chí, Sắp xếp theo Deadline và Phân trang (Người 3 phụ trách).">
+
+  <!-- 1. Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <!-- 2. Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- 3. Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- 4. CSS Dùng Chung (Người 1 phụ trách) -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- 5. Tinh chỉnh CSS bổ trợ cho Thanh công cụ Người 3 & Phân trang tương thích Dark/Light Theme -->
+  <style>
+    /* Thanh công cụ tìm kiếm và lọc */
+    .toolbar-section .filter-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition-normal);
+    }
+    .toolbar-section .filter-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .search-input-group {
+      position: relative;
+    }
+    .search-input-group .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 0.95rem;
+    }
+    .search-input-group .form-control {
+      padding-left: 42px;
+      padding-right: 40px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-surface-secondary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    .search-input-group .form-control:focus {
+      background-color: var(--bg-surface);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      color: var(--text-primary);
+    }
+    .search-input-group .btn-clear-search {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      cursor: pointer;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-input-group .btn-clear-search:hover {
+      color: var(--danger);
+    }
+
+    /* Các dropdown lọc */
+    .filter-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toolbar-section .form-select {
+      height: 42px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-surface-secondary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+      font-size: var(--text-sm);
+    }
+    .toolbar-section .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    /* Phân trang đồng bộ màu sắc Quán Cafe */
+    .pagination .page-item .page-link {
+      color: var(--text-primary);
+      background-color: var(--bg-surface);
+      border-color: var(--border-color);
+      font-weight: 500;
+      padding: 0.5rem 0.85rem;
+      transition: all var(--transition-fast);
+    }
+    .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+      background-color: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .pagination .page-item.active .page-link {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(199, 130, 67, 0.35);
+    }
+    .pagination .page-item.disabled .page-link {
+      color: var(--text-muted);
+      background-color: var(--bg-surface-secondary);
+      border-color: var(--border-color);
+      opacity: 0.6;
+    }
+
+    /* Task Card fallback */
+    .task-card {
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .task-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================================================================
+       NAVBAR RESPONSIVE DÙNG CHUNG (NGƯỜI 1 PHỤ TRÁCH)
+       ================================================================ -->
+  <header class="site-navbar" id="site-navbar">
+    <div class="container navbar-container">
+      
+      <!-- Brand Logo & Title -->
+      <a href="index.html" class="navbar-brand" aria-label="Về trang chủ Cafe Task Manager">
+        <div class="brand-icon">
+          <i class="fa-solid fa-mug-hot"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Cafe Task Manager</span>
+          <span class="brand-badge">Quản lý công việc</span>
+        </div>
+      </a>
+
+      <!-- Menu Điều Hướng (Dùng chung) -->
+      <nav class="navbar-nav" id="navbar-nav" aria-label="Điều hướng chính">
+        <div class="mobile-nav-header">
+          <span class="brand-title" style="font-size: var(--text-lg);">Cafe Task Manager</span>
+          <button type="button" class="mobile-nav-close" id="mobile-nav-close" aria-label="Đóng menu">&times;</button>
+        </div>
+
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">Trang chủ</a></li>
+          <li><a href="tasks.html" class="nav-link active">Quản lý công việc</a></li>
+          <li><a href="pages/page-2.html" class="nav-link">Báo cáo &amp; Thống kê</a></li>
+          <li><a href="pages/page-3.html" class="nav-link">Phân công ca trực</a></li>
+        </ul>
+      </nav>
+
+      <!-- Overlay che mờ khi mở mobile drawer -->
+      <div class="navbar-overlay" id="navbar-overlay" aria-hidden="true"></div>
+
+      <!-- Action Buttons (Dark Mode Toggle & Nút công cụ) -->
+      <div class="navbar-actions">
+        <!-- Nút chuyển đổi Dark Mode / Light Mode -->
+        <button type="button" class="theme-toggle-btn" id="theme-toggle" aria-label="Chuyển đổi giao diện Sáng/Tối" title="Chuyển đổi giao diện">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Nút Hamburger Điều Khiển Mobile Menu -->
+        <button type="button" class="navbar-toggle" id="navbar-toggle" aria-label="Mở menu điều hướng" aria-expanded="false" aria-controls="navbar-nav">
+          <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================================================================
+       MAIN CONTENT: TRANG QUẢN LÝ CÔNG VIỆC
+       ================================================================ -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Tiêu đề trang -->
+      <div class="page-header">
+        <div class="page-title-group">
+          <h1>
+            <i class="fa-solid fa-list-check text-warning me-2"></i>
+            <span>Bảng Công Việc Quán Cafe</span>
+          </h1>
+          <p class="page-title-desc">
+            Theo dõi, tìm kiếm, lọc và phân bổ tiến độ công việc hàng ngày của các bộ phận trong quán.
+          </p>
+        </div>
+
+        <!-- Các nút tiện ích tầng dữ liệu (Export / Import / Clear All) -->
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+          <button type="button" class="btn btn-outline btn-export-json" title="Xuất dữ liệu ra tệp JSON">
+            <i class="fa-solid fa-file-export me-1"></i>
+            <span>Export JSON</span>
+          </button>
+
+          <button type="button" class="btn btn-outline btn-trigger-import" data-target-input="input-import-json" title="Nhập danh sách từ tệp JSON">
+            <i class="fa-solid fa-file-import me-1"></i>
+            <span>Import JSON</span>
+          </button>
+          <input type="file" id="input-import-json" class="input-import-json" accept=".json,application/json" style="display: none;">
+
+          <button type="button" class="btn btn-danger btn-clear-all" title="Xóa toàn bộ công việc">
+            <i class="fa-solid fa-trash-can me-1"></i>
+            <span>Clear All</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ================================================================ -->
+      <!-- KHU VỰC NGƯỜI 3: SEARCH / FILTER / SORT                          -->
+      <!-- ================================================================ -->
+      <section class="toolbar-section mb-4" aria-label="Thanh công cụ Tìm kiếm và Bộ lọc">
+        <div class="filter-card">
+          
+          <!-- HÀNG 1: Ô TÌM KIẾM THEO TỪ KHÓA (SEARCH) -->
+          <div class="row g-3 mb-3">
+            <div class="col-12">
+              <label for="filter-search" class="filter-label">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Tìm kiếm công việc</span>
+              </label>
+              <div class="search-input-group">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input 
+                  type="text" 
+                  id="filter-search" 
+                  class="form-control" 
+                  placeholder="Nhập tên công việc, mô tả hoặc danh mục cần tìm (hỗ trợ tiếng Việt)..."
+                  autocomplete="off"
+                >
+                <button type="button" id="btn-clear-search" class="btn-clear-search" title="Xóa từ khóa tìm kiếm" aria-label="Xóa từ khóa">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- HÀNG 2: BỘ LỌC STATUS, PRIORITY, SORT DEADLINE VÀ SỐ LƯỢNG / TRANG -->
+          <div class="row g-3 align-items-end">
+            
+            <!-- 1. Lọc theo Trạng thái (Status: Tất cả / Pending / Done) -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <label for="filter-status" class="filter-label">
+                <i class="fa-solid fa-bars-progress"></i>
+                <span>Trạng thái</span>
+              </label>
+              <select id="filter-status" class="form-select" aria-label="Lọc theo trạng thái">
+                <option value="all" selected>Tất cả trạng thái</option>
+                <option value="Pending">⏳ Chờ thực hiện (Pending)</option>
+                <option value="Done">✓ Đã hoàn thành (Done)</option>
+              </select>
+            </div>
+
+            <!-- 2. Lọc theo Độ ưu tiên (Priority: Tất cả / Low / Medium / High) -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <label for="filter-priority" class="filter-label">
+                <i class="fa-solid fa-flag"></i>
+                <span>Độ ưu tiên</span>
+              </label>
+              <select id="filter-priority" class="form-select" aria-label="Lọc theo độ ưu tiên">
+                <option value="all" selected>Tất cả độ ưu tiên</option>
+                <option value="High">🔴 Cao (High)</option>
+                <option value="Medium">🟡 Trung bình (Medium)</option>
+                <option value="Low">⚪ Thấp (Low)</option>
+              </select>
+            </div>
+
+            <!-- 3. Sắp xếp theo Deadline (Gần nhất -> Xa nhất, Xa nhất -> Gần nhất, Mặc định) -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <label for="filter-sort" class="filter-label">
+                <i class="fa-solid fa-arrow-down-short-wide"></i>
+                <span>Sắp xếp Deadline</span>
+              </label>
+              <select id="filter-sort" class="form-select" aria-label="Sắp xếp theo hạn chót">
+                <option value="default" selected>Thứ tự mặc định</option>
+                <option value="deadline-asc">📅 Hạn gần nhất trước (Tăng dần)</option>
+                <option value="deadline-desc">📅 Hạn xa nhất trước (Giảm dần)</option>
+              </select>
+            </div>
+
+            <!-- 4. Số lượng task / trang & Nút Đặt lại bộ lọc -->
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="d-flex gap-2">
+                <div style="flex: 1;">
+                  <label for="filter-page-size" class="filter-label">
+                    <i class="fa-solid fa-table-cells"></i>
+                    <span>Hiển thị</span>
+                  </label>
+                  <select id="filter-page-size" class="form-select" aria-label="Số task trên mỗi trang">
+                    <option value="5" selected>5 việc / trang</option>
+                    <option value="10">10 việc / trang</option>
+                    <option value="15">15 việc / trang</option>
+                  </select>
+                </div>
+
+                <div style="display: flex; flex-direction: column; justify-content: flex-end;">
+                  <button type="button" id="btn-reset-filters" class="btn btn-outline" title="Khôi phục bộ lọc về mặc định" style="height: 42px; white-space: nowrap;">
+                    <i class="fa-solid fa-rotate-left me-1"></i>
+                    <span>Đặt lại</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- HÀNG 3: BÁO CÁO THỐNG KÊ KẾT QUẢ LỌC REALTIME -->
+          <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top flex-wrap gap-2">
+            <div id="filter-results-info">
+              <span class="badge bg-light text-dark border px-3 py-2" style="font-size: 0.85rem;">
+                Đang nạp dữ liệu công việc...
+              </span>
+            </div>
+
+            <!-- Gợi ý phím tắt hoặc tác vụ nhanh -->
+            <div class="text-muted" style="font-size: 0.8rem;">
+              <i class="fa-regular fa-lightbulb text-warning me-1"></i>
+              Gợi ý: Tìm kiếm và lọc được cập nhật theo thời gian thực (Realtime).
+            </div>
+          </div>
+
+        </div>
+
+        <!-- THANH PHÂN TRANG (PAGINATION) DO NGƯỜI 3 PHỤ TRÁCH -->
+        <nav id="tasks-pagination-wrapper" class="d-flex justify-content-center mt-4" aria-label="Phân trang danh sách công việc">
+          <ul class="pagination mb-0" id="tasks-pagination">
+            <!-- Nút Prev, Các số trang 1, 2, 3... và Next sẽ được Người 3 render tự động từ assets/js/tasks.js -->
+          </ul>
+        </nav>
+      </section>
+      <!-- ================================================================ -->
+      <!-- KẾT THÚC KHU VỰC NGƯỜI 3                                         -->
+      <!-- ================================================================ -->
+
+
+      <!-- ================================================================ -->
+      <!-- KHU VỰC NGƯỜI 2: DANH SÁCH TASK & MODAL (CRUD & VALIDATION)      -->
+      <!-- ================================================================ -->
+      <section class="task-list-section" aria-label="Danh sách công việc và tác vụ CRUD">
+        
+        <!-- Thanh tiêu đề danh sách và Nút Thêm mới (Người 2) -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-clipboard-list text-primary"></i>
+            <span>Danh Sách Công Việc Vận Hành</span>
+          </h3>
+
+          <button type="button" class="btn btn-primary" id="btn-open-add-modal">
+            <i class="fa-solid fa-plus me-1"></i>
+            <span>Thêm công việc mới</span>
+          </button>
+        </div>
+
+        <!-- VÙNG RENDER DANH SÁCH TASK (Người 2 phụ trách vẽ hoặc Người 3 vẽ fallback) -->
+        <div id="task-list" style="display: flex; flex-direction: column; gap: var(--space-md);">
+          <!-- Danh sách task sẽ được nạp động từ window.renderTaskList(paginatedTasks) -->
+        </div>
+
+        <!-- Trạng thái trống (Empty State khi không tìm thấy task) -->
+        <div id="empty-state" class="card" style="display: none; text-align: center; padding: var(--space-2xl) var(--space-lg); margin-top: var(--space-md);">
+          <div style="font-size: 3rem; margin-bottom: var(--space-sm);">☕</div>
+          <h3 style="margin-bottom: var(--space-xs);">Không tìm thấy công việc nào</h3>
+          <p style="color: var(--text-secondary); max-width: 450px; margin-inline: auto; margin-bottom: var(--space-lg);">
+            Không có công việc nào thỏa mãn tiêu chí tìm kiếm hoặc bộ lọc hiện tại. Hãy thử tìm từ khóa khác hoặc đặt lại bộ lọc.
+          </p>
+          <div style="display: flex; gap: var(--space-sm); justify-content: center; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline" onclick="window.TaskFilter && window.TaskFilter.resetFilters()">
+              <i class="fa-solid fa-rotate-left me-1"></i>
+              <span>Đặt lại bộ lọc</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="btn-empty-add">
+              <i class="fa-solid fa-plus me-1"></i>
+              <span>Thêm công việc mới</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MODAL POPUP THÊM / CHỈNH SỬA CÔNG VIỆC (NGƯỜI 2 PHỤ TRÁCH) -->
+        <div class="modal-backdrop" id="task-modal-backdrop" aria-hidden="true" style="display: none;">
+          <div class="modal" role="dialog" aria-labelledby="task-modal-title">
+            <div class="modal-header">
+              <h3 class="modal-title" id="task-modal-title">Thêm Công Việc Mới</h3>
+              <button type="button" class="modal-close" id="btn-close-modal" aria-label="Đóng">&times;</button>
+            </div>
+            <form id="task-form">
+              <input type="hidden" id="task-id">
+              <div class="modal-body">
+                <div class="form-group mb-3">
+                  <label for="task-title" class="form-label">Tên công việc <span class="text-danger">*</span></label>
+                  <input type="text" id="task-title" class="form-input form-control" placeholder="Ví dụ: Kiểm tra hạn sử dụng sữa tươi..." required>
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label for="task-priority" class="form-label">Độ ưu tiên</label>
+                    <select id="task-priority" class="form-select">
+                      <option value="Low">Thấp (Low)</option>
+                      <option value="Medium" selected>Trung bình (Medium)</option>
+                      <option value="High">Cao (High)</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="task-deadline" class="form-label">Hạn chót (Deadline) <span class="text-danger">*</span></label>
+                    <input type="date" id="task-deadline" class="form-input form-control" required>
+                  </div>
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="task-desc" class="form-label">Mô tả công việc (Tối thiểu 10 ký tự)</label>
+                  <textarea id="task-desc" class="form-textarea form-control" rows="3" placeholder="Nhập chi tiết các bước cần thực hiện trong quán..."></textarea>
+                </div>
+              </div>
+              <div class="modal-footer d-flex justify-content-end gap-2 p-3 border-top">
+                <button type="button" class="btn btn-outline" id="btn-cancel-modal">Hủy bỏ</button>
+                <button type="submit" class="btn btn-primary" id="btn-save-task">Lưu công việc</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </section>
+      <!-- ================================================================ -->
+      <!-- KẾT THÚC KHU VỰC NGƯỜI 2                                         -->
+      <!-- ================================================================ -->
+
+    </div>
+  </main>
+
+  <!-- ================================================================
+       FOOTER DÙNG CHUNG (NGƯỜI 1 PHỤ TRÁCH)
+       ================================================================ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="brand-icon" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--primary-soft); border-radius: var(--radius-sm); color: var(--accent);">☕</div>
+          <div>
+            <strong style="color: var(--text-primary);">Cafe Task Manager</strong>
+            <div style="font-size: var(--text-xs); color: var(--text-muted);">Hệ thống Vận hành Quán Cafe - Bài tập Giữa kỳ</div>
+          </div>
+        </div>
+        <div class="footer-nav">
+          <a href="index.html">Trang chủ</a>
+          <a href="tasks.html">Quản lý công việc</a>
+          <a href="pages/page-2.html">Báo cáo &amp; Thống kê</a>
+          <a href="pages/page-3.html">Phân công ca trực</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Cafe Task Manager. Bản quyền dự án Lập trình Web.</span>
+        <span>Phụ trách Tìm kiếm, Lọc, Sắp xếp &amp; Phân trang: <strong>Người 3</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 1. Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- 2. Tầng dữ liệu LocalStorage (Người 1 phụ trách) -->
+  <script src="assets/js/taskService.js"></script>
+
+  <!-- 3. Giao diện chung, Navbar, Dark Mode, Toast (Người 1 phụ trách) -->
+  <script src="assets/js/main.js"></script>
+
+  <!-- 4. Tầng logic Tìm kiếm, Lọc kết hợp, Sắp xếp & Phân trang (Người 3 phụ trách) -->
+  <script src="assets/js/tasks.js"></script>
+
+  <!-- 5. Script hỗ trợ mở/đóng Modal thêm việc (cho đến khi Người 2 hoàn thành CRUD chính thức) -->
+  <script>
+    (function () {
+      const modalBackdrop = document.getElementById('task-modal-backdrop');
+      const openAddBtn = document.getElementById('btn-open-add-modal');
+      const openEmptyAddBtn = document.getElementById('btn-empty-add');
+      const closeBtn = document.getElementById('btn-close-modal');
+      const cancelBtn = document.getElementById('btn-cancel-modal');
+      const taskForm = document.getElementById('task-form');
+
+      function showModal() {
+        if (!modalBackdrop) return;
+        modalBackdrop.style.display = 'flex';
+        modalBackdrop.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function hideModal() {
+        if (!modalBackdrop) return;
+        modalBackdrop.style.display = 'none';
+        modalBackdrop.classList.remove('is-open');
+        document.body.style.overflow = '';
+        if (taskForm) taskForm.reset();
+      }
+
+      if (openAddBtn) openAddBtn.addEventListener('click', showModal);
+      if (openEmptyAddBtn) openEmptyAddBtn.addEventListener('click', showModal);
+      if (closeBtn) closeBtn.addEventListener('click', hideModal);
+      if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
+
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', function (e) {
+          if (e.target === modalBackdrop) hideModal();
+        });
+      }
+
+      if (taskForm) {
+        taskForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const title = document.getElementById('task-title').value.trim();
+          const priority = document.getElementById('task-priority').value;
+          const deadline = document.getElementById('task-deadline').value;
+          const description = document.getElementById('task-desc').value.trim();
+
+          if (!title) {
+            alert('Vui lòng nhập tiêu đề công việc!');
+            return;
+          }
+
+          if (window.TaskService && typeof window.TaskService.addTask === 'function') {
+            window.TaskService.addTask({
+              title: title,
+              priority: priority,
+              deadline: deadline,
+              description: description || 'Mô tả chi tiết công việc trong ca trực quán cafe.',
+              status: 'Pending'
+            });
+
+            if (typeof window.showToast === 'function') {
+              window.showToast('Đã thêm công việc mới thành công!', 'success');
+            }
+          }
+
+          hideModal();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
