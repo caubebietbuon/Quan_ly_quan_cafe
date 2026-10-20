@@ -23,6 +23,14 @@
   <!-- 5. CSS Dùng Chung Toàn Hệ Thống (Người 1 phụ trách) -->
   <link rel="stylesheet" href="assets/css/style.css">
 
+  <!-- Chống giật sáng khi chuyển trang (Tránh FOUC) -->
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || localStorage.getItem('CAFE_THEME') === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+
   <!-- 6. CSS Tinh chỉnh Riêng Cho Trang Thống Kê (Người 5 phụ trách) -->
   <style>
     /* Bố cục KPI Dashboard */
@@ -721,6 +729,7 @@
   <script src="assets/js/taskService.js"></script>
 
   <!-- 4. Logic tương tác giao diện chung, Dark Mode, Navbar (Người 1 phụ trách) -->
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/main.js"></script>
 
   <!-- 5. Tầng Thống kê, Vẽ biểu đồ Chart.js & Phân tích số liệu (Người 5 phụ trách) -->

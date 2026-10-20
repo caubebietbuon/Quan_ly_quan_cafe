@@ -13,13 +13,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 :root {
-  /* LIGHT THEME (Mặc định - Phong cách Cà phê thanh lịch) */
-  --bg-primary: #FAF7F2;          /* Nền trang: Màu kem sữa ngà ấm áp */
-  --bg-surface: #FFFFFF;          /* Bề mặt thẻ, thanh điều hướng: Trắng */
+  /* Màu mặc định (Giao diện Sáng) theo yêu cầu */
+  --bg-color: #FAF7F2;          /* Nền trang: Màu kem sữa ngà ấm áp */
+  --text-color: #2C1810;        /* Văn bản chính: Nâu đen đậm */
+  --card-bg: #FFFFFF;           /* Bề mặt thẻ, thanh điều hướng: Trắng */
+  --border-color: #E6DCce;       /* Đường viền ngăn cách */
+
+  --bg-primary: var(--bg-color);
+  --bg-surface: var(--card-bg);
   --bg-surface-secondary: #F4EFEB;/* Bề mặt phụ, ô input, dropdown */
   --bg-card-hover: #FBF9F6;
-  
-  --border-color: #E6DCce;        /* Đường viền ngăn cách */
   --border-focus: #C78243;
 
   --text-primary: #2C1810;        /* Văn bản chính: Nâu đen đậm */
@@ -98,10 +101,17 @@
   --navbar-height: 70px;
 }
 
-/* DARK THEME (Chế độ tối - Phong cách Nâu Espresso sang trọng) */
+/* Màu khi bật chế độ Tối (Áp dụng cho body.dark-theme, html.dark-theme và [data-theme="dark"]) */
+body.dark-theme,
+html.dark-theme,
 [data-theme="dark"] {
-  --bg-primary: #15110E;          /* Nền trang: Nâu đen sôcôla sâu */
-  --bg-surface: #221B17;          /* Bề mặt thẻ / Navbar */
+  --bg-color: #15110E;          /* Nền trang: Nâu đen sôcôla sâu */
+  --text-color: #F5EFEB;        /* Văn bản chính: Trắng kem sáng */
+  --card-bg: #221B17;           /* Bề mặt thẻ / Navbar */
+  --border-color: #382D26;
+
+  --bg-primary: var(--bg-color);
+  --bg-surface: var(--card-bg);
   --bg-surface-secondary: #2E2520;/* Ô input, hover */
   --bg-card-hover: #29211C;
 
@@ -155,13 +165,20 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: 1.6;
   overflow-x: hidden;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Các thành phần điều hướng dùng biến tương ứng */
+nav, .navbar, .site-navbar, .header {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
 }
 
 img, svg {

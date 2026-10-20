@@ -14,6 +14,14 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <!-- CSS Trang Chủ (Người 4 phụ trách) -->
   <link rel="stylesheet" href="assets/css/home.css">
+
+  <!-- Chống giật sáng khi chuyển trang (Tránh FOUC) -->
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || localStorage.getItem('CAFE_THEME') === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#noi-dung">Bỏ qua điều hướng, đến nội dung chính</a>
@@ -238,6 +246,7 @@
   </footer>
 
   <!-- JavaScript Dùng Chung (Người 1 phụ trách) -->
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

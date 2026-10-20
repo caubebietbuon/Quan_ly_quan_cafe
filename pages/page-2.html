@@ -8,6 +8,14 @@
   
   <!-- CSS Dùng Chung (Người 1 phụ trách) -->
   <link rel="stylesheet" href="../assets/css/style.css">
+
+  <!-- Chống giật sáng khi chuyển trang (Tránh FOUC) -->
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || localStorage.getItem('CAFE_THEME') === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
 </head>
 <body>
 
@@ -176,6 +184,7 @@
   </footer>
 
   <!-- JavaScript Dùng Chung (Người 1 phụ trách) -->
+  <script src="../assets/js/theme.js"></script>
   <script src="../assets/js/taskService.js"></script>
   <script src="../assets/js/main.js"></script>
 
