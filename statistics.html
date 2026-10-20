@@ -141,7 +141,7 @@
     }
     .chart-container {
       position: relative;
-      flex-grow: 1;
+      height: 280px;
       min-height: 280px;
       width: 100%;
     }
@@ -513,7 +513,7 @@
               </h2>
               <span class="badge bg-secondary-subtle text-secondary-emphasis">So sánh Done / Tổng</span>
             </div>
-            <div class="chart-container" style="min-height: 250px;">
+            <div class="chart-container" style="height: 300px; min-height: 300px;">
               <canvas id="chartCategory"></canvas>
             </div>
             <div class="text-center mt-3 small text-muted">
@@ -726,8 +726,13 @@
   <!-- 1. Bootstrap 5 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- 2. Chart.js (Thư viện vẽ biểu đồ lấy điểm Bonus của Người 5) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <!-- 2. Chart.js (Ưu tiên nạp vendor local offline, fallback dự phòng CDN) -->
+  <script src="assets/js/vendor/chart.umd.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"><\/script>');
+    }
+  </script>
 
   <!-- 3. Tầng dữ liệu LocalStorage (Người 1 phụ trách) -->
   <script src="assets/js/taskService.js"></script>

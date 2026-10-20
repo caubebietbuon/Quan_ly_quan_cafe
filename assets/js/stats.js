@@ -33,14 +33,19 @@
      1. TIỆN ÍCH HỖ TRỢ THEME & MÀU SẮC CHO CHART.JS
      ------------------------------------------------------------------ */
   function getThemeColors() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const isDark = (document.documentElement.getAttribute('data-theme') === 'dark') ||
+                   (document.body && document.body.classList.contains('dark-theme')) ||
+                   document.documentElement.classList.contains('dark-theme');
     return {
+      isDark,
       textColor: isDark ? '#F5EFEB' : '#2C1810',
+      textSecondary: isDark ? '#B8ABA2' : '#6E5D53',
       textMuted: isDark ? '#83746B' : '#9E8E84',
+      cardBg: isDark ? '#221B17' : '#FFFFFF',
       gridColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(44, 24, 16, 0.08)',
-      tooltipBg: isDark ? 'rgba(34, 27, 23, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-      tooltipText: isDark ? '#F5EFEB' : '#2C1810',
-      tooltipBorder: isDark ? '#382D26' : '#E6DCCE',
+      tooltipBg: isDark ? 'rgba(30, 23, 19, 0.96)' : 'rgba(255, 255, 255, 0.96)',
+      tooltipText: isDark ? '#FFFDF9' : '#1A0E08',
+      tooltipBorder: isDark ? 'rgba(221, 162, 106, 0.35)' : '#E6DCCE',
       fontFamily: "'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif"
     };
   }
@@ -299,42 +304,80 @@
     if (ctxStatus) {
       if (statusChartInstance) {
         statusChartInstance.destroy();
+        statusChartInstance = null;
       }
+
+      const hasTasks = metrics.total > 0;
+      const doughnutData = hasTasks ? [metrics.done, metrics.pending] : [1];
+      const doughnutLabels = hasTasks ? ['Đã hoàn thành (Done)', 'Chờ thực hiện (Pending)'] : ['Chưa có dữ liệu'];
+      const doughnutBg = hasTasks ? ['#27AE60', '#E67E22'] : [theme.isDark ? '#382D26' : '#E6DCCE'];
+      const doughnutHover = hasTasks ? ['#2ECC71', '#F39C12'] : [theme.isDark ? '#4A3B32' : '#D5C8B8'];
+
+      // Custom Center Text Plugin for Doughnut Chart
+      const centerTextPlugin = {
+        id: 'centerTextPlugin',
+        afterDraw(chart) {
+          const { ctx } = chart;
+          const meta = chart.getDatasetMeta(0);
+          if (!meta || !meta.data || !meta.data[0]) return;
+          const centerX = meta.data[0].x;
+          const centerY = meta.data[0].y;
+
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          // Tỷ lệ % chính
+          ctx.font = `800 28px ${theme.fontFamily}`;
+          ctx.fillStyle = theme.textColor;
+          ctx.fillText(`${hasTasks ? metrics.completionRate : 0}%`, centerX, centerY - 8);
+
+          // Phụ đề chữ nhỏ
+          ctx.font = `700 10px ${theme.fontFamily}`;
+          ctx.fillStyle = theme.textMuted;
+          ctx.letterSpacing = '0.08em';
+          ctx.fillText('HOÀN THÀNH', centerX, centerY + 16);
+
+          ctx.restore();
+        }
+      };
 
       statusChartInstance = new Chart(ctxStatus, {
         type: 'doughnut',
         data: {
-          labels: ['Đã hoàn thành (Done)', 'Chờ thực hiện (Pending)'],
+          labels: doughnutLabels,
           datasets: [{
-            data: [metrics.done, metrics.pending],
-            backgroundColor: [
-              '#27AE60', // Xanh lá
-              '#E67E22'  // Cam cà phê
-            ],
-            hoverBackgroundColor: [
-              '#2ECC71',
-              '#F39C12'
-            ],
-            borderColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#221B17' : '#FFFFFF',
-            borderWidth: 3
+            data: doughnutData,
+            backgroundColor: doughnutBg,
+            hoverBackgroundColor: doughnutHover,
+            borderColor: theme.cardBg,
+            borderWidth: 3,
+            hoverOffset: 4
           }]
         },
+        plugins: [centerTextPlugin],
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          cutout: '70%',
+          cutout: '72%',
+          animation: {
+            animateRotate: true,
+            animateScale: false,
+            duration: 800
+          },
           plugins: {
             legend: {
               position: 'bottom',
               labels: {
                 color: theme.textColor,
-                font: { family: theme.fontFamily, size: 13, weight: '500' },
+                font: { family: theme.fontFamily, size: 12, weight: '600' },
                 padding: 16,
                 usePointStyle: true,
                 pointStyle: 'circle'
               }
             },
             tooltip: {
+              enabled: hasTasks,
               backgroundColor: theme.tooltipBg,
               titleColor: theme.tooltipText,
               bodyColor: theme.tooltipText,
@@ -359,6 +402,7 @@
     if (ctxPriority) {
       if (priorityChartInstance) {
         priorityChartInstance.destroy();
+        priorityChartInstance = null;
       }
 
       priorityChartInstance = new Chart(ctxPriority, {
@@ -369,34 +413,43 @@
             label: 'Số lượng công việc',
             data: [metrics.high, metrics.medium, metrics.low],
             backgroundColor: [
-              'rgba(192, 57, 43, 0.85)',  // Đỏ High
-              'rgba(243, 156, 18, 0.85)', // Vàng cam Medium
-              'rgba(127, 140, 141, 0.85)' // Xám Low
+              theme.isDark ? '#E74C3C' : '#C0392B', // Đỏ High
+              theme.isDark ? '#F39C12' : '#E67E22', // Vàng cam Medium
+              theme.isDark ? '#3498DB' : '#2980B9'  // Lam Low
+            ],
+            hoverBackgroundColor: [
+              '#FF6B5B',
+              '#F5B041',
+              '#5DADE2'
             ],
             borderColor: [
-              '#C0392B',
-              '#F39C12',
-              '#7F8C8D'
+              theme.isDark ? '#C0392B' : '#962D22',
+              theme.isDark ? '#D68910' : '#B9770E',
+              theme.isDark ? '#2471A3' : '#1F618D'
             ],
             borderWidth: 1.5,
-            borderRadius: 8,
-            maxBarThickness: 45
+            borderRadius: { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 },
+            maxBarThickness: 46
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: { duration: 800 },
           plugins: {
-            legend: {
-              display: false
-            },
+            legend: { display: false },
             tooltip: {
               backgroundColor: theme.tooltipBg,
               titleColor: theme.tooltipText,
               bodyColor: theme.tooltipText,
               borderColor: theme.tooltipBorder,
               borderWidth: 1,
-              padding: 12
+              padding: 12,
+              callbacks: {
+                label: function (context) {
+                  return ` ${context.dataset.label}: ${context.raw} đầu việc`;
+                }
+              }
             }
           },
           scales: {
@@ -404,15 +457,16 @@
               grid: { display: false },
               ticks: {
                 color: theme.textColor,
-                font: { family: theme.fontFamily, size: 12, weight: '500' }
+                font: { family: theme.fontFamily, size: 12, weight: '600' }
               }
             },
             y: {
               beginAtZero: true,
               ticks: {
+                precision: 0,
                 stepSize: 1,
                 color: theme.textMuted,
-                font: { family: theme.fontFamily, size: 12 }
+                font: { family: theme.fontFamily, size: 11 }
               },
               grid: {
                 color: theme.gridColor
@@ -423,49 +477,58 @@
       });
     }
 
-    // 7.3. BIỂU ĐỒ THEO BỘ PHẬN / DANH MỤC (CATEGORY SUMMARY)
+    // 7.3. BIỂU ĐỒ THEO BỘ PHẬN / DANH MỤC (CATEGORY SUMMARY - HORIZONTAL BAR)
     const ctxCategory = document.getElementById('chartCategory');
     if (ctxCategory) {
       if (categoryChartInstance) {
         categoryChartInstance.destroy();
+        categoryChartInstance = null;
       }
 
       const catNames = Object.keys(metrics.categoryMap);
-      const catTotals = catNames.map(c => metrics.categoryMap[c].total);
-      const catDones = catNames.map(c => metrics.categoryMap[c].done);
+      const isCatEmpty = catNames.length === 0;
+      const displayLabels = isCatEmpty ? ['Chưa có danh mục'] : catNames;
+      const catTotals = isCatEmpty ? [0] : catNames.map(c => metrics.categoryMap[c].total);
+      const catDones = isCatEmpty ? [0] : catNames.map(c => metrics.categoryMap[c].done);
 
       categoryChartInstance = new Chart(ctxCategory, {
         type: 'bar',
         data: {
-          labels: catNames.length > 0 ? catNames : ['Chưa có danh mục'],
+          labels: displayLabels,
           datasets: [
             {
               label: 'Đã hoàn thành',
-              data: catDones.length > 0 ? catDones : [0],
+              data: catDones,
               backgroundColor: '#27AE60',
+              hoverBackgroundColor: '#2ECC71',
               borderRadius: 6,
-              maxBarThickness: 24
+              maxBarThickness: 22
             },
             {
               label: 'Tổng đầu việc',
-              data: catTotals.length > 0 ? catTotals : [0],
-              backgroundColor: document.documentElement.getAttribute('data-theme') === 'dark' ? '#DDA26A' : '#C78243',
+              data: catTotals,
+              backgroundColor: theme.isDark ? '#DDA26A' : '#C78243',
+              hoverBackgroundColor: theme.isDark ? '#EDB988' : '#B06F33',
               borderRadius: 6,
-              maxBarThickness: 24
+              maxBarThickness: 22
             }
           ]
         },
         options: {
-          indexAxis: 'y', // Biểu đồ dạng thanh nằm ngang
+          indexAxis: 'y', // Biểu đồ nằm ngang
           responsive: true,
           maintainAspectRatio: false,
+          animation: { duration: 800 },
           plugins: {
             legend: {
               position: 'top',
+              align: 'end',
               labels: {
                 color: theme.textColor,
-                font: { family: theme.fontFamily, size: 12 },
-                usePointStyle: true
+                font: { family: theme.fontFamily, size: 12, weight: '600' },
+                padding: 12,
+                usePointStyle: true,
+                pointStyle: 'rectRounded'
               }
             },
             tooltip: {
@@ -474,13 +537,19 @@
               bodyColor: theme.tooltipText,
               borderColor: theme.tooltipBorder,
               borderWidth: 1,
-              padding: 10
+              padding: 12,
+              callbacks: {
+                label: function (context) {
+                  return ` ${context.dataset.label}: ${context.raw} việc`;
+                }
+              }
             }
           },
           scales: {
             x: {
               beginAtZero: true,
               ticks: {
+                precision: 0,
                 stepSize: 1,
                 color: theme.textMuted,
                 font: { family: theme.fontFamily, size: 11 }
@@ -490,7 +559,7 @@
             y: {
               ticks: {
                 color: theme.textColor,
-                font: { family: theme.fontFamily, size: 12, weight: '500' }
+                font: { family: theme.fontFamily, size: 12, weight: '600' }
               },
               grid: { display: false }
             }
@@ -550,7 +619,12 @@
       }
     });
 
-    // 10.3. Đổi theme sáng/tối -> Cập nhật màu biểu đồ ngay lập tức
+    // 10.3. Lắng nghe sự kiện themechange từ theme.js
+    window.addEventListener('themechange', function () {
+      setTimeout(updateAllStatistics, 50);
+    });
+
+    // 10.4. Đổi theme sáng/tối -> Cập nhật màu biểu đồ ngay lập tức
     const themeBtn = document.querySelectorAll('.theme-toggle-btn');
     themeBtn.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -558,17 +632,20 @@
       });
     });
 
-    // Quan sát thay đổi thuộc tính data-theme trên thẻ html
+    // Quan sát thay đổi thuộc tính data-theme hoặc class trên html/body
     const themeObserver = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+        if (mutation.type === 'attributes' && (mutation.attributeName === 'data-theme' || mutation.attributeName === 'class')) {
           updateAllStatistics();
         }
       });
     });
     themeObserver.observe(document.documentElement, { attributes: true });
+    if (document.body) {
+      themeObserver.observe(document.body, { attributes: true });
+    }
 
-    // 10.4. Xử lý nút In / Lưu PDF báo cáo
+    // 10.5. Xử lý nút In / Lưu PDF báo cáo
     const printBtn = document.getElementById('btn-print-report');
     if (printBtn) {
       printBtn.addEventListener('click', () => {
