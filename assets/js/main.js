@@ -71,6 +71,11 @@
      ------------------------------------------------------------------ */
   const ThemeManager = {
     init: function () {
+      // Nếu theme.js đã quản lý thanh tác vụ Cốc Cốc và chuyển đổi giao diện, không gắn trùng sự kiện
+      if (window.__cocCocThemeInitialized) {
+        return;
+      }
+
       const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem(LEGACY_THEME_KEY);
       const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       
@@ -88,6 +93,11 @@
     },
 
     applyTheme: function (theme) {
+      if (typeof window.applyTheme === 'function') {
+        window.applyTheme(theme);
+        return;
+      }
+
       document.documentElement.setAttribute('data-theme', theme);
       try {
         localStorage.setItem(THEME_STORAGE_KEY, theme);
