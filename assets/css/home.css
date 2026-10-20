@@ -202,12 +202,18 @@ a:focus-visible {
 
 .button-light {
   background: #f5eadd;
-  color: var(--coffee-900);
+  color: #2c1810;
+  font-weight: 700;
 }
 
 .button-light:hover {
-  background: white;
-  box-shadow: 0 8px 20px rgb(0 0 0 / 14%);
+  background: #ffffff;
+  color: #1a0e08;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 18%);
+}
+
+.button-light svg {
+  stroke: currentColor;
 }
 
 .text-link {
@@ -1327,6 +1333,63 @@ html.dark-mode #closing-title,
 [data-theme="dark"] #closing-title {
   color: #FFFDF9 !important;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Nút bấm sáng (.button-light) tại Hero và toàn trang khi ở Dark Mode */
+body.dark-theme .button-light,
+html.dark-theme .button-light,
+body.dark-mode .button-light,
+html.dark-mode .button-light,
+[data-theme="dark"] .button-light,
+body.dark-theme .hero .button-light,
+html.dark-theme .hero .button-light,
+body.dark-mode .hero .button-light,
+html.dark-mode .hero .button-light,
+[data-theme="dark"] .hero .button-light {
+  background: #F5EADD !important;
+  color: #24150D !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45) !important;
+}
+
+body.dark-theme .button-light:hover,
+html.dark-theme .button-light:hover,
+body.dark-mode .button-light:hover,
+html.dark-mode .button-light:hover,
+[data-theme="dark"] .button-light:hover,
+body.dark-theme .hero .button-light:hover,
+html.dark-theme .hero .button-light:hover,
+body.dark-mode .hero .button-light:hover,
+html.dark-mode .hero .button-light:hover,
+[data-theme="dark"] .hero .button-light:hover {
+  background: #FFFFFF !important;
+  color: #120904 !important;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-theme .button-light svg,
+html.dark-theme .button-light svg,
+body.dark-mode .button-light svg,
+html.dark-mode .button-light svg,
+[data-theme="dark"] .button-light svg {
+  stroke: currentColor !important;
+}
+
+body.dark-theme .hero-actions .text-link,
+html.dark-theme .hero-actions .text-link,
+body.dark-mode .hero-actions .text-link,
+html.dark-mode .hero-actions .text-link,
+[data-theme="dark"] .hero-actions .text-link {
+  color: #F1DFCC !important;
+}
+
+body.dark-theme .hero-actions .text-link:hover,
+html.dark-theme .hero-actions .text-link:hover,
+body.dark-mode .hero-actions .text-link:hover,
+html.dark-mode .hero-actions .text-link:hover,
+[data-theme="dark"] .hero-actions .text-link:hover {
+  color: #FFFFFF !important;
 }
 
 body.dark-theme .closing-cta .button-light,
