@@ -744,9 +744,9 @@ a:focus-visible {
 .footer-about>p {
   max-width: 310px;
   margin: 16px 0 0;
-  color: #a99d91;
-  font-size: 10px;
-  line-height: 1.9;
+  color: #b3a89c;
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 .footer-column {
@@ -759,15 +759,15 @@ a:focus-visible {
 .footer-column h2 {
   margin: 2px 0 5px;
   color: white;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .footer-column a,
 .footer-column p {
   margin: 0;
-  color: #a99d91;
-  font-size: 10px;
+  color: #b3a89c;
+  font-size: 14px;
   line-height: 1.8;
 }
 
@@ -787,8 +787,8 @@ a:focus-visible {
   justify-content: space-between;
   gap: 20px;
   border-top: 1px solid rgb(255 255 255 / 10%);
-  color: #91867b;
-  font-size: 9px;
+  color: #a99d91;
+  font-size: 14px;
 }
 
 .footer-bottom a {
@@ -1078,7 +1078,7 @@ a:focus-visible {
     justify-content: center;
     gap: 6px;
     padding-block: 13px;
-    font-size: 8px;
+    font-size: 13px;
   }
 }
 
