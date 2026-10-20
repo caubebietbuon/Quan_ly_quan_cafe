@@ -14,8 +14,8 @@
   --green: #47765d;
   --container: 1160px;
   font-family: "Be Vietnam Pro", sans-serif;
-  color: var(--ink);
-  background: var(--cream-50);
+  color: var(--text-color, var(--ink));
+  background: var(--bg-color, var(--cream-50));
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -1042,4 +1042,230 @@ a:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ====================================================================
+   DARK MODE OVERRIDES CHO TOÀN BỘ TRANG CHỦ (INDEX.HTML / HOME.CSS)
+   ==================================================================== */
+html.dark-theme,
+body.dark-theme,
+html.dark-mode,
+body.dark-mode,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --coffee-950: #faf7f5;
+  --coffee-900: #f2ece6;
+  --coffee-800: #e0d1c3;
+  --coffee-700: #dda26a;
+  --coffee-600: #e5a870;
+  --coffee-500: #f2bd8d;
+  --cream-50: #15110e;
+  --cream-100: #1d1713;
+  --cream-200: #2c221c;
+  --ink: #f5efeb;
+  --muted: #a6988d;
+  background-color: #15110e !important;
+  color: #f5efeb !important;
+}
+
+/* Khối Features & Nền trang */
+body.dark-theme .features,
+html.dark-theme .features,
+body.dark-mode .features,
+html.dark-mode .features,
+[data-theme="dark"] .features {
+  background-color: #15110e !important;
+  color: #f5efeb !important;
+}
+
+/* Tiêu đề & Phụ đề trong Features */
+body.dark-theme .eyebrow-dark,
+html.dark-theme .eyebrow-dark,
+body.dark-mode .eyebrow-dark,
+html.dark-mode .eyebrow-dark,
+[data-theme="dark"] .eyebrow-dark {
+  color: #dda26a !important;
+}
+
+body.dark-theme .section-heading h2,
+html.dark-theme .section-heading h2,
+body.dark-mode .section-heading h2,
+html.dark-mode .section-heading h2,
+[data-theme="dark"] .section-heading h2 {
+  color: #faf7f5 !important;
+}
+
+body.dark-theme .section-heading h2 span,
+html.dark-theme .section-heading h2 span,
+body.dark-mode .section-heading h2 span,
+html.dark-mode .section-heading h2 span,
+[data-theme="dark"] .section-heading h2 span {
+  color: #dda26a !important;
+}
+
+body.dark-theme .section-heading > p:last-child,
+html.dark-theme .section-heading > p:last-child,
+body.dark-mode .section-heading > p:last-child,
+html.dark-mode .section-heading > p:last-child,
+[data-theme="dark"] .section-heading > p:last-child {
+  color: #a6988d !important;
+}
+
+/* Các thẻ Feature Card */
+body.dark-theme .feature-card,
+html.dark-theme .feature-card,
+body.dark-mode .feature-card,
+html.dark-mode .feature-card,
+[data-theme="dark"] .feature-card {
+  background: #221b17 !important;
+  border-color: #382d26 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+}
+
+body.dark-theme .feature-card:hover,
+html.dark-theme .feature-card:hover,
+body.dark-mode .feature-card:hover,
+html.dark-mode .feature-card:hover,
+[data-theme="dark"] .feature-card:hover {
+  background: #2a211c !important;
+  border-color: #dda26a !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.65) !important;
+}
+
+body.dark-theme .feature-card h3,
+html.dark-theme .feature-card h3,
+body.dark-mode .feature-card h3,
+html.dark-mode .feature-card h3,
+[data-theme="dark"] .feature-card h3 {
+  color: #faf7f5 !important;
+}
+
+body.dark-theme .feature-card p,
+html.dark-theme .feature-card p,
+body.dark-mode .feature-card p,
+html.dark-mode .feature-card p,
+[data-theme="dark"] .feature-card p {
+  color: #b8aba2 !important;
+}
+
+body.dark-theme .feature-number,
+html.dark-theme .feature-number,
+body.dark-mode .feature-number,
+html.dark-mode .feature-number,
+[data-theme="dark"] .feature-number {
+  color: #83746b !important;
+}
+
+body.dark-theme .feature-link,
+html.dark-theme .feature-link,
+body.dark-mode .feature-link,
+html.dark-mode .feature-link,
+[data-theme="dark"] .feature-link {
+  color: #dda26a !important;
+}
+
+body.dark-theme .feature-link:hover,
+html.dark-theme .feature-link:hover,
+body.dark-mode .feature-link:hover,
+html.dark-mode .feature-link:hover,
+[data-theme="dark"] .feature-link:hover {
+  color: #f2bd8d !important;
+}
+
+/* Icon trong feature card */
+body.dark-theme .icon-coffee,
+html.dark-theme .icon-coffee,
+[data-theme="dark"] .icon-coffee {
+  background: rgba(199, 130, 67, 0.2) !important;
+  color: #dda26a !important;
+}
+
+body.dark-theme .icon-table,
+html.dark-theme .icon-table,
+[data-theme="dark"] .icon-table {
+  background: rgba(46, 204, 113, 0.2) !important;
+  color: #2ecc71 !important;
+}
+
+body.dark-theme .icon-team,
+html.dark-theme .icon-team,
+[data-theme="dark"] .icon-team {
+  background: rgba(52, 152, 219, 0.2) !important;
+  color: #3498db !important;
+}
+
+body.dark-theme .icon-chart,
+html.dark-theme .icon-chart,
+[data-theme="dark"] .icon-chart {
+  background: rgba(243, 156, 18, 0.2) !important;
+  color: #f39c12 !important;
+}
+
+/* Thẻ Dashboard Card ở Hero */
+body.dark-theme .dashboard-card,
+html.dark-theme .dashboard-card,
+body.dark-mode .dashboard-card,
+html.dark-mode .dashboard-card,
+[data-theme="dark"] .dashboard-card {
+  background: #1e1713 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f5efeb !important;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-theme .dashboard-top h2,
+html.dark-theme .dashboard-top h2,
+[data-theme="dark"] .dashboard-top h2 {
+  color: #faf7f5 !important;
+}
+
+body.dark-theme .mini-stat,
+html.dark-theme .mini-stat,
+[data-theme="dark"] .mini-stat {
+  background: #2a201a !important;
+  border-color: #3d3027 !important;
+}
+
+body.dark-theme .mini-stat strong,
+html.dark-theme .mini-stat strong,
+[data-theme="dark"] .mini-stat strong {
+  color: #faf7f5 !important;
+}
+
+body.dark-theme .mini-stat-accent,
+html.dark-theme .mini-stat-accent,
+[data-theme="dark"] .mini-stat-accent {
+  background: rgba(46, 204, 113, 0.12) !important;
+  border-color: rgba(46, 204, 113, 0.25) !important;
+}
+
+body.dark-theme .task-preview,
+html.dark-theme .task-preview,
+[data-theme="dark"] .task-preview {
+  border-color: #382d26 !important;
+}
+
+body.dark-theme .task-label strong,
+html.dark-theme .task-label strong,
+[data-theme="dark"] .task-label strong {
+  color: #f5efeb !important;
+}
+
+body.dark-theme .task-label small,
+html.dark-theme .task-label small,
+[data-theme="dark"] .task-label small {
+  color: #a89b91 !important;
+}
+
+body.dark-theme .task-preview-heading,
+html.dark-theme .task-preview-heading,
+[data-theme="dark"] .task-preview-heading {
+  color: #d4c9be !important;
+}
+
+body.dark-theme .dashboard-footer,
+html.dark-theme .dashboard-footer,
+[data-theme="dark"] .dashboard-footer {
+  border-color: #382d26 !important;
+  color: #a89b91 !important;
 }
